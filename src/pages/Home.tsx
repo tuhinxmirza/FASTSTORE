@@ -73,12 +73,16 @@ export default function Home({ mode = "home" }: { mode?: Mode }) {
     <div className="min-h-screen bg-white text-slate-900">
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3">
-          <img src="/brand/logo-full.png" alt="FAST STORE" className="h-10 w-10 rounded-lg object-cover" />
-          <input
-            value={q} onChange={(e) => setQ(e.target.value)} autoFocus={mode === "search"}
-            placeholder="Search apps & games" aria-label="Search"
-            className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-100 px-4 py-2 text-sm outline-none focus:border-blue-500"
-          />
+          <img src="/brand/icon.png" alt="FAST STORE" className="h-10 w-10 object-contain" />
+          {mode === "search" ? (
+            <input
+              value={q} onChange={(e) => setQ(e.target.value)} autoFocus
+              placeholder="Search apps & games" aria-label="Search"
+              className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-100 px-4 py-2 text-sm outline-none focus:border-blue-500"
+            />
+          ) : (
+            <div className="flex-1" />
+          )}
           {session ? (
             <Link to="/profile" aria-label="Profile" className="shrink-0">
               {avatar

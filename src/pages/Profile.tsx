@@ -8,7 +8,7 @@ export default function Profile() {
     return (
       <div className="grid min-h-screen place-items-center bg-white p-6 text-center text-slate-900">
         <div>
-          <img src="/brand/logo-full.png" alt="" className="mx-auto h-32 w-32 rounded-2xl object-cover" />
+          <img src="/brand/icon.png" alt="" className="mx-auto h-28 w-28 object-contain" />
           <p className="mt-4 text-lg font-medium">Sign in to your account</p>
           <Link to="/login" className="mt-4 inline-block rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 px-6 py-2.5 font-medium text-white">
             Sign in with Google
