@@ -9,10 +9,10 @@ import AdminDashboard from "./pages/AdminDashboard";
 const Stub = ({ title }: { title: string }) => {
   const { signOut, access } = useAuth();
   return (
-    <div className="min-h-screen bg-[#050a1f] p-10 text-slate-100">
+    <div className="min-h-screen bg-white p-10 text-slate-900">
       <h1 className="text-xl font-semibold">{title}</h1>
-      <p className="mt-1 text-sm text-slate-400">Role: {access?.role ?? "guest"} (page built in a later phase)</p>
-      {access && <button onClick={signOut} className="mt-4 rounded-lg border border-white/20 px-3 py-1.5 text-sm">Sign out</button>}
+      <p className="mt-1 text-sm text-slate-500">Role: {access?.role ?? "guest"} (page built in a later phase)</p>
+      {access && <button onClick={signOut} className="mt-4 rounded-lg border border-slate-300 px-3 py-1.5 text-sm">Sign out</button>}
     </div>
   );
 };
@@ -29,14 +29,14 @@ function PublicLayout() {
   return (
     <>
       <div className="pb-20"><Outlet /></div>
-      <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-white/10 bg-[#0a1130]/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
+      <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
         <div className="mx-auto flex max-w-3xl justify-around">
           {NAV.map((n) => (
             <NavLink key={n.to} to={n.to} end={n.to === "/"}
-              className={({ isActive }) => `flex flex-1 flex-col items-center gap-1 py-2 text-xs ${isActive ? "text-cyan-300" : "text-slate-400"}`}>
+              className={({ isActive }) => `flex flex-1 flex-col items-center gap-1 py-2 text-xs ${isActive ? "text-blue-700" : "text-slate-500"}`}>
               {({ isActive }) => (
                 <>
-                  <span className={`grid h-7 w-14 place-items-center rounded-full ${isActive ? "bg-cyan-400/15" : ""}`}>
+                  <span className={`grid h-7 w-14 place-items-center rounded-full ${isActive ? "bg-blue-100" : ""}`}>
                     <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current"><path d={n.d} /></svg>
                   </span>
                   {n.label}
