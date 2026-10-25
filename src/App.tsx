@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth/AuthProvider";
 import { RequireRole, RequireSignedIn } from "./auth/guards";
 import Login from "./pages/Login";
+import Home from "./pages/Home";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const Stub = ({ title }: { title: string }) => {
   const { signOut, access } = useAuth();
@@ -19,15 +21,16 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Stub title="FAST STORE: Home" />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/privacy" element={<Stub title="Privacy Policy" />} />
           <Route path="/terms" element={<Stub title="Terms of Service" />} />
+          <Route path="/app/:slug" element={<Stub title="App Details" />} />
           <Route element={<RequireSignedIn />}>
             <Route path="/developer/*" element={<Stub title="Developer Console" />} />
           </Route>
           <Route element={<RequireRole roles={["admin"]} />}>
-            <Route path="/admin/*" element={<Stub title="Admin Panel" />} />
+            <Route path="/admin/*" element={<AdminDashboard />} />
           </Route>
         </Routes>
       </AuthProvider>
