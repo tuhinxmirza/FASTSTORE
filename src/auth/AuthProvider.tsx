@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(s);
     if (!s) { setAccess(null); setLoading(false); return; }
     // The server decides the role; the admin allowlist lives only in the Edge Function.
-    const { data, error: fnErr } = await supabase.functions.invoke<Access>("sync-admin");
+    const { data, error: fnErr } = await supabase.functions.invoke<Access>("dynamic-responder");
     if (fnErr || !data) {
       setError("Could not verify your account. Please try again.");
       await supabase.auth.signOut();
