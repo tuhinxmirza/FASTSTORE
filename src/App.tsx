@@ -6,6 +6,9 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Categories from "./pages/Categories";
 import AppDetail from "./pages/AppDetail";
+import Developer from "./pages/Developer";
+import DeveloperVerification from "./pages/DeveloperVerification";
+import AdminRequirements from "./pages/AdminRequirements";
 import Notifications from "./pages/Notifications";
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -72,9 +75,12 @@ export default function App() {
             <Route path="/app/:slug" element={<AppDetail />} />
           </Route>
           <Route element={<RequireSignedIn />}>
+            <Route path="/developer" element={<Developer />} />
+            <Route path="/developer/verification" element={<DeveloperVerification />} />
             <Route path="/developer/*" element={<Stub title="Developer Console" />} />
           </Route>
           <Route element={<RequireRole roles={["admin"]} />}>
+            <Route path="/admin/requirements" element={<AdminRequirements />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
           </Route>
         </Routes>
