@@ -6,6 +6,11 @@ const TABS = [
   { to: "/admin", label: "Overview" },
   { to: "/admin/verifications", label: "Verifications" },
   { to: "/admin/requirements", label: "Requirements" },
+  { to: "/admin/developers", label: "Developers" },
+  { to: "/admin/apps", label: "Apps" },
+  { to: "/admin/categories", label: "Categories" },
+  { to: "/admin/users", label: "Users" },
+  { to: "/admin/audit-logs", label: "Audit logs" },
   { to: "/admin/settings", label: "Settings" },
 ];
 
