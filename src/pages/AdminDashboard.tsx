@@ -71,6 +71,7 @@ export default function AdminDashboard() {
       <header className="flex items-center gap-3 border-b border-slate-200 px-4 py-3">
         <img src="/brand/icon.png" alt="" className="h-9 w-9 object-contain" />
         <h1 className="flex-1 font-semibold">Admin Panel</h1>
+        <Link to="/admin/requirements" className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm">Requirements</Link>
         <Link to="/" className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm">Store</Link>
         <button onClick={signOut} className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm">Sign out</button>
       </header>
