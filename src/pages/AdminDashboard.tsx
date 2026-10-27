@@ -77,6 +77,20 @@ export default function AdminDashboard() {
       </header>
 
       <main className="mx-auto max-w-4xl space-y-8 p-4">
+        <section>
+          <h2 className="mb-3 text-lg font-medium">Manage</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <Link to="/admin/verifications" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 font-medium active:bg-slate-100">Verifications</Link>
+            <Link to="/admin/developers" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 font-medium active:bg-slate-100">Developers</Link>
+            <Link to="/admin/apps" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 font-medium active:bg-slate-100">Apps</Link>
+            <Link to="/admin/categories" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 font-medium active:bg-slate-100">Categories</Link>
+            <Link to="/admin/users" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 font-medium active:bg-slate-100">Users</Link>
+            <Link to="/admin/requirements" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 font-medium active:bg-slate-100">Requirements</Link>
+            <Link to="/admin/settings" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 font-medium active:bg-slate-100">Settings</Link>
+            <Link to="/admin/audit-logs" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 font-medium active:bg-slate-100">Audit logs</Link>
+          </div>
+        </section>
+
         {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>}
 
         <section>

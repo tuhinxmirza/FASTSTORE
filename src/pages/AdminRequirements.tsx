@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import Shell from "./Shell";
+import Shell from "./AdminShell";
 
 type Req = {
   id: string; title: string; instructions: string | null; kind: string; mandatory: boolean;
@@ -49,7 +49,7 @@ export default function AdminRequirements() {
   }
 
   return (
-    <Shell title="Verification requirements" back={{ to: "/admin", label: "Admin" }}>
+    <Shell title="Verification requirements">
       <p className="text-sm text-slate-500">Developers see the enabled requirements when they apply. Each submission keeps a copy of the requirements it was made with.</p>
       {error && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</p>}
       {msg && <p className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">{msg}</p>}
