@@ -9,6 +9,13 @@ import AppDetail from "./pages/AppDetail";
 import Developer from "./pages/Developer";
 import DeveloperVerification from "./pages/DeveloperVerification";
 import AdminRequirements from "./pages/AdminRequirements";
+import AdminVerifications from "./pages/AdminVerifications";
+import AdminDevelopers from "./pages/AdminDevelopers";
+import AdminSettings from "./pages/AdminSettings";
+import AdminCategories from "./pages/AdminCategories";
+import AdminApps from "./pages/AdminApps";
+import AdminUsers from "./pages/AdminUsers";
+import AdminAuditLogs from "./pages/AdminAuditLogs";
 import Notifications from "./pages/Notifications";
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -81,6 +88,13 @@ export default function App() {
           </Route>
           <Route element={<RequireRole roles={["admin"]} />}>
             <Route path="/admin/requirements" element={<AdminRequirements />} />
+            <Route path="/admin/verifications" element={<AdminVerifications />} />
+            <Route path="/admin/developers" element={<AdminDevelopers />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="/admin/categories" element={<AdminCategories />} />
+            <Route path="/admin/apps" element={<AdminApps />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
           </Route>
         </Routes>
