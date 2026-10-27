@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Categories from "./pages/Categories";
+import AppDetail from "./pages/AppDetail";
 import Notifications from "./pages/Notifications";
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -68,7 +69,7 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/privacy" element={<Stub title="Privacy Policy" />} />
             <Route path="/terms" element={<Stub title="Terms of Service" />} />
-            <Route path="/app/:slug" element={<Stub title="App Details" />} />
+            <Route path="/app/:slug" element={<AppDetail />} />
           </Route>
           <Route element={<RequireSignedIn />}>
             <Route path="/developer/*" element={<Stub title="Developer Console" />} />
