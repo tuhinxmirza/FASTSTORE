@@ -13,7 +13,7 @@ const STATUS: Record<string, { text: string; cls: string; next: string }> = {
   submitted: { text: "Submitted", cls: "bg-blue-50 text-blue-700", next: "Your application is waiting for review. We will notify you." },
   under_review: { text: "Under review", cls: "bg-blue-50 text-blue-700", next: "An administrator is reviewing your application." },
   changes_requested: { text: "Changes requested", cls: "bg-amber-50 text-amber-800", next: "Update your application as described below and submit again." },
-  approved: { text: "Approved", cls: "bg-emerald-50 text-emerald-700", next: "You are verified. App publishing tools are coming next." },
+  approved: { text: "Approved", cls: "bg-emerald-50 text-emerald-700", next: "You are verified. You can now publish apps." },
   rejected: { text: "Rejected", cls: "bg-red-50 text-red-600", next: "Your application was rejected. See the reason below." },
   suspended: { text: "Suspended", cls: "bg-red-50 text-red-600", next: "Your developer account is suspended." },
 };
@@ -105,6 +105,9 @@ export default function Developer() {
         <p className="mt-1 text-slate-600">{s.next}</p>
         {vapp?.decision_reason && ["changes_requested", "rejected"].includes(status) && (
           <p className="mt-3 rounded-xl bg-white p-3 text-sm text-slate-700"><b>Administrator note:</b> {vapp.decision_reason}</p>
+        )}
+        {canPublish && (
+          <Link to="/developer/apps" className="mt-4 inline-block rounded-full bg-blue-700 px-6 py-2.5 font-medium text-white">My apps</Link>
         )}
         {canEdit && (
           <Link to="/developer/verification" className="mt-4 inline-block rounded-full bg-blue-700 px-6 py-2.5 font-medium text-white">

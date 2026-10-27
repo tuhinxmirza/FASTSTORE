@@ -8,6 +8,8 @@ import Categories from "./pages/Categories";
 import AppDetail from "./pages/AppDetail";
 import Developer from "./pages/Developer";
 import DeveloperVerification from "./pages/DeveloperVerification";
+import DeveloperApps from "./pages/DeveloperApps";
+import DeveloperAppEdit from "./pages/DeveloperAppEdit";
 import AdminRequirements from "./pages/AdminRequirements";
 import AdminVerifications from "./pages/AdminVerifications";
 import AdminDevelopers from "./pages/AdminDevelopers";
@@ -84,6 +86,8 @@ export default function App() {
           <Route element={<RequireSignedIn />}>
             <Route path="/developer" element={<Developer />} />
             <Route path="/developer/verification" element={<DeveloperVerification />} />
+            <Route path="/developer/apps" element={<DeveloperApps />} />
+            <Route path="/developer/apps/:id" element={<DeveloperAppEdit />} />
             <Route path="/developer/*" element={<Stub title="Developer Console" />} />
           </Route>
           <Route element={<RequireRole roles={["admin"]} />}>
