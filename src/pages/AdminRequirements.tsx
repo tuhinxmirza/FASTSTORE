@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../auth/AuthProvider";
+import { audit } from "../lib/admin";
 import Shell from "./AdminShell";
 
 type Req = {
@@ -18,6 +20,8 @@ const DEFAULTS = [
 const field = "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500";
 
 export default function AdminRequirements() {
+  const { session } = useAuth();
+  const me = session!.user.id;
   const [reqs, setReqs] = useState<Req[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -48,6 +52,14 @@ export default function AdminRequirements() {
     if (e) setError("Could not update the requirement."); else load();
   }
 
+  async function remove(r: Req) {
+    if (!window.confirm(`Delete "${r.title}"? Existing applications keep their own copy.`)) return;
+    const { error: e } = await supabase.from("verification_requirement_definitions").delete().eq("id", r.id);
+    if (e) { setError("Could not delete the requirement."); return; }
+    await audit(me, "requirement.delete", "verification_requirement", r.id, r.title);
+    setMsg("Requirement deleted."); load();
+  }
+
   return (
     <Shell title="Verification requirements">
       <p className="text-sm text-slate-500">Developers see the enabled requirements when they apply. Each submission keeps a copy of the requirements it was made with.</p>
@@ -67,9 +79,12 @@ export default function AdminRequirements() {
             </p>
             {r.instructions && <p className="mt-1 text-sm text-slate-600">{r.instructions}</p>}
           </div>
-          <button onClick={() => toggle(r)} className={`shrink-0 rounded-full px-3 py-1 text-sm ${r.enabled ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
+          <div className="flex shrink-0 flex-col gap-2">
+            <button onClick={() => toggle(r)} className={`shrink-0 rounded-full px-3 py-1 text-sm ${r.enabled ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
             {r.enabled ? "Enabled" : "Disabled"}
           </button>
+            <button onClick={() => remove(r)} className="rounded-full bg-red-50 px-3 py-1 text-sm text-red-600">Delete</button>
+          </div>
         </div>
       ))}
 
