@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../auth/AuthProvider";
 import Shell from "./Shell";
 
-type Dev = { id: string; legal_name: string; display_name: string; account_type: string; country: string; status: string };
+type Dev = { id: string; legal_name: string; display_name: string; account_type: string; country: string; status: string; description: string | null };
 type VApp = { id: string; status: string; decision_reason: string | null };
 
 const STATUS: Record<string, { text: string; cls: string; next: string }> = {
@@ -27,6 +27,9 @@ export default function Developer() {
   const [canPublish, setCanPublish] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [e, setE] = useState({ display: "", country: "", desc: "" });
   const [f, setF] = useState({ legal: "", display: "", type: "individual", country: "", desc: "" });
 
   const load = useCallback(async () => {
@@ -55,6 +58,16 @@ export default function Developer() {
     });
     setBusy(false);
     if (e) setError("Could not create your developer profile."); else load();
+  }
+
+  async function saveProfile() {
+    if (!e.display.trim() || !e.country.trim()) { setError("Display name and country are required."); return; }
+    setBusy(true); setError(null); setMsg(null);
+    const { error: er } = await supabase.from("developer_profiles")
+      .update({ display_name: e.display.trim(), country: e.country.trim(), description: e.desc.trim() || null }).eq("id", uid);
+    setBusy(false);
+    if (er) { setError("Could not save your profile."); return; }
+    setEditing(false); setMsg("Profile updated."); load();
   }
 
   if (dev === undefined && !error) return <Shell title="Developer Console" back={{ to: "/", label: "Store" }}><p className="text-slate-500">Loading…</p></Shell>;
@@ -92,6 +105,19 @@ export default function Developer() {
         <p className="text-xl font-medium">{dev.display_name}</p>
         <p className="text-sm text-slate-500">{dev.legal_name} · {dev.account_type} · {dev.country}</p>
         <p className="mt-1 text-xs text-slate-400">Developer ID: {dev.id}</p>
+        {dev.description && <p className="mt-2 text-sm text-slate-600">{dev.description}</p>}
+        {msg && <p className="mt-2 text-sm text-emerald-700">{msg}</p>}
+        <button onClick={() => { setE({ display: dev.display_name, country: dev.country, desc: dev.description ?? "" }); setEditing(!editing); }}
+          className="mt-3 rounded-full border border-slate-300 px-4 py-1.5 text-sm">{editing ? "Cancel" : "Edit profile"}</button>
+        {editing && (
+          <div className="mt-3 space-y-3">
+            <input className={field} placeholder="Developer display name" value={e.display} onChange={(x) => setE({ ...e, display: x.target.value })} />
+            <input className={field} placeholder="Country or region" value={e.country} onChange={(x) => setE({ ...e, country: x.target.value })} />
+            <textarea className={field} rows={3} placeholder="About you or your team" value={e.desc} onChange={(x) => setE({ ...e, desc: x.target.value })} />
+            <p className="text-xs text-slate-500">Legal name and account type cannot be changed after registration. Contact support if needed.</p>
+            <button onClick={saveProfile} disabled={busy} className="rounded-full bg-blue-700 px-5 py-2 text-sm font-medium text-white disabled:opacity-50">Save profile</button>
+          </div>
+        )}
         <div className="mt-4 flex flex-wrap gap-2 text-sm">
           <span className={`rounded-full px-3 py-1 ${s.cls}`}>Verification: {s.text}</span>
           <span className={`rounded-full px-3 py-1 ${canPublish ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-700"}`}>

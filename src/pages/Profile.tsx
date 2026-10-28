@@ -24,7 +24,7 @@ export default function Profile() {
 
   const items: { to: string; label: string }[] = [];
   if (access?.role === "admin") items.push({ to: "/admin", label: "Admin Panel" });
-  items.push({ to: "/developer", label: "Developer Console" });
+  items.push({ to: "/developer", label: "Developer Profile & Console" });
   items.push({ to: "/privacy", label: "Privacy Policy" });
   items.push({ to: "/terms", label: "Terms of Service" });
 
