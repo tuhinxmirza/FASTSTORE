@@ -14,10 +14,27 @@ export default function DeveloperApps() {
   const { session } = useAuth();
   const [rows, setRows] = useState<A[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [stats, setStats] = useState<Record<string, { dl: number; n: number; avg: number }>>({});
   useEffect(() => {
     supabase.from("apps").select("id,name,package_name,status,decision_reason").eq("developer_id", session!.user.id)
       .order("created_at", { ascending: false })
-      .then(({ data, error: e }) => { if (e) setError("Could not load your apps."); else setRows((data as A[]) ?? []); });
+      .then(async ({ data, error: e }) => {
+        if (e) { setError("Could not load your apps."); return; }
+        const list = (data as A[]) ?? [];
+        setRows(list);
+        if (!list.length) return;
+        const ids = list.map((x) => x.id);
+        const [d, r] = await Promise.all([
+          supabase.from("app_download_events").select("app_id").in("app_id", ids).limit(50000),
+          supabase.from("app_reviews").select("app_id,rating").in("app_id", ids).eq("hidden", false).limit(50000),
+        ]);
+        const m: Record<string, { dl: number; n: number; sum: number; avg: number }> = {};
+        ids.forEach((i) => { m[i] = { dl: 0, n: 0, sum: 0, avg: 0 }; });
+        (d.data ?? []).forEach((x: { app_id: string }) => { m[x.app_id].dl++; });
+        (r.data ?? []).forEach((x: { app_id: string; rating: number }) => { m[x.app_id].n++; m[x.app_id].sum += x.rating; });
+        Object.values(m).forEach((x) => { x.avg = x.n ? x.sum / x.n : 0; });
+        setStats(m);
+      });
   }, [session]);
   return (
     <Shell title="My apps" back={{ to: "/developer", label: "Console" }}>
@@ -32,7 +49,8 @@ export default function DeveloperApps() {
             <span className={`shrink-0 rounded-full px-3 py-1 text-xs ${TONE[a.status] ?? "bg-slate-100 text-slate-700"}`}>{a.status.replace("_", " ")}</span>
           </div>
           <p className="truncate text-xs text-slate-500">{a.package_name}</p>
-          {a.status === "rejected" && a.decision_reason && <p className="mt-2 text-sm text-red-600">Note: {a.decision_reason}</p>}
+          {stats[a.id] && <p className="mt-1 text-xs text-slate-600">⬇ {stats[a.id].dl} downloads · ★ {stats[a.id].n ? stats[a.id].avg.toFixed(1) : "–"} ({stats[a.id].n} reviews)</p>}
+          {["rejected", "suspended"].includes(a.status) && a.decision_reason && <p className="mt-2 text-sm text-red-600">Note: {a.decision_reason}</p>}
         </Link>
       ))}
     </Shell>
