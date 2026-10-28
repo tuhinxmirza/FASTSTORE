@@ -54,6 +54,7 @@ export default function DeveloperAppEdit() {
   const uid = session!.user.id;
   const [cats, setCats] = useState<Cat[]>([]);
   const [status, setStatus] = useState("draft");
+  const [newIcon, setNewIcon] = useState<File | null>(null);
   const [reason, setReason] = useState<string | null>(null);
   const [icon, setIcon] = useState<string | null>(null);
   const [vers, setVers] = useState<Ver[]>([]);
@@ -95,6 +96,11 @@ export default function DeveloperAppEdit() {
     if (isNew) {
       const { data, error } = await supabase.from("apps").insert({ ...row, developer_id: uid, status: "draft", slug: `${slugify(f.name) || "app"}-${Math.random().toString(36).slice(2, 6)}` }).select("id").single();
       if (error) return fail(error.code === "23505" ? "This package name is already used." : "Could not create the app.");
+      if (newIcon) {
+        const path = `${uid}/${data.id}-${Date.now()}.${newIcon.name.split(".").pop()}`;
+        const up = await supabase.storage.from("app-icons").upload(path, newIcon, { contentType: newIcon.type });
+        if (!up.error) await supabase.from("apps").update({ icon_path: path }).eq("id", data.id);
+      }
       setBusy(false); nav(`/developer/apps/${data.id}`, { replace: true });
     } else {
       const { error } = await supabase.from("apps").update(row).eq("id", id!);
@@ -189,14 +195,29 @@ export default function DeveloperAppEdit() {
         </select>
         <input className={fieldCls} maxLength={80} placeholder="Short description (max 80)" disabled={!editable} value={f.short} onChange={(e) => setF({ ...f, short: e.target.value })} />
         <textarea className={fieldCls} rows={5} placeholder="Full description" disabled={!editable} value={f.full} onChange={(e) => setF({ ...f, full: e.target.value })} />
+        {isNew && (
+          <div className="space-y-2 rounded-2xl bg-slate-50 p-4">
+            <p className="font-medium">App icon</p>
+            {newIcon && <img src={URL.createObjectURL(newIcon)} alt="Icon preview" className="h-20 w-20 rounded-2xl border border-slate-200 object-cover" />}
+            <label className="inline-block cursor-pointer rounded-full border border-slate-300 px-4 py-2 text-sm font-medium">
+              {newIcon ? "Change icon" : "Choose icon"}
+              <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => { setNewIcon(e.target.files?.[0] ?? null); e.target.value = ""; }} />
+            </label>
+            <p className="text-xs text-slate-500">Square PNG or JPG, 512×512 recommended.</p>
+          </div>
+        )}
         {editable && <button disabled={busy} onClick={save} className={btnPrimary}>{isNew ? "Create app" : "Save details"}</button>}
       </section>
 
       {!isNew && (
         <>
           <section className="space-y-2 rounded-2xl bg-slate-50 p-4">
-            <p className="font-medium">Icon {icon ? "✓" : ""}</p>
-            <input type="file" accept="image/png,image/jpeg,image/webp" disabled={busy || !editable} onChange={(e) => { uploadIcon(e.target.files?.[0]); e.target.value = ""; }} className="text-sm" />
+            <p className="font-medium">App icon {icon ? "✓" : "(required)"}</p>
+            {icon && <img src={supabase.storage.from("app-icons").getPublicUrl(icon).data.publicUrl} alt="App icon" className="h-20 w-20 rounded-2xl border border-slate-200 object-cover" />}
+            <label className={`inline-block rounded-full border border-slate-300 px-4 py-2 text-sm font-medium ${busy || !editable ? "opacity-50" : "cursor-pointer"}`}>
+              {icon ? "Change icon" : "Choose icon"}
+              <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" disabled={busy || !editable} onChange={(e) => { uploadIcon(e.target.files?.[0]); e.target.value = ""; }} />
+            </label>
           </section>
 
           <section className="space-y-2 rounded-2xl bg-slate-50 p-4">
